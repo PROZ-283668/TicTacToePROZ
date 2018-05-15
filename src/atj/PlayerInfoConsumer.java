@@ -13,11 +13,11 @@ import com.sun.messaging.ConnectionConfiguration;
 
 import javafx.util.Pair;
 
-public class Consumer implements MessageListener
+public class PlayerInfoConsumer
 {
 	GameStageController.GameLogic game;
 
-	Consumer(GameStageController.GameLogic game)
+	PlayerInfoConsumer(GameStageController.GameLogic game)
 	{
 		this.game = game;
 	}
@@ -32,51 +32,37 @@ public class Consumer implements MessageListener
 			((com.sun.messaging.ConnectionFactory) connectionFactory)
 					.setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
 			Queue queue = new com.sun.messaging.Queue("ATJQueue");
-			String selector = "PlayerID <> '" + game.getPlayer() + "'";
-			JMSConsumer jmsConsumer = jmsContext.createConsumer(queue, selector);
-			jmsConsumer.setMessageListener(this);
+			JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
 
-			Runnable idleRunnable = new Runnable()
+			System.out.println("Konsument czeka na info");
+			TextMessage message;
+
+			Thread.sleep(10000);
+			while (game.getPlayerNotSet())
 			{
-				@Override
-				public void run()
+				Message m = jmsConsumer.receive(1);
+				if (m != null)
 				{
-					while (true)
+					if (m instanceof TextMessage)
 					{
-
+						message = (TextMessage) m;
+						game.setPlayer(message.getText().charAt(0));
+					} else
+					{
+						break;
 					}
 				}
-			};
-
-			Thread idleThread = new Thread(idleRunnable, "idleThread");
-			idleThread.start();
+			}
 
 			jmsConsumer.close();
 		} catch (JMSException e)
+		{
+			e.printStackTrace();
+		} catch (InterruptedException e)
 		{
 			e.printStackTrace();
 		}
 
 		jmsContext.close();
 	}
-
-	@Override
-	public void onMessage(Message message)
-	{
-		TextMessage msg = (TextMessage) message;
-
-		try
-		{
-			String text = msg.getText();
-			String[] coordinates = text.split(":");
-			Pair<Integer, Integer> location = new Pair<Integer, Integer>(Integer.parseInt(coordinates[0]),
-					Integer.parseInt(coordinates[1]));
-
-			game.registerMove(location);
-		} catch (JMSException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 }

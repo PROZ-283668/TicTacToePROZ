@@ -13,6 +13,7 @@ public class GameStageController
 {
 	private final static int size = 3;
 	GameLogic game;
+	PlayerInfoConsumer PIConsumer;
 	ImageView[][] imageBoard;
 
 	@FXML
@@ -46,6 +47,7 @@ public class GameStageController
 		game = new GameLogic();
 		game.setProducer(new Producer(game));
 		game.setConsumer(new Consumer(game));
+		PIConsumer = new PlayerInfoConsumer(game);
 
 		imageBoard = new ImageView[size][size];
 		imageBoard[0][0] = iv00;
@@ -57,6 +59,9 @@ public class GameStageController
 		imageBoard[2][0] = iv20;
 		imageBoard[2][1] = iv21;
 		imageBoard[2][2] = iv22;
+
+		game.disableGrid();
+		PIConsumer.recieveQueueMessages();
 	}
 
 	@FXML
@@ -116,17 +121,23 @@ public class GameStageController
 	@FXML
 	private void btnO_clicked()
 	{
+		game.setPlayerNotSet(false);
+		game.getProducer().sendPlayerInfo('X');
 		game.setPlayer('O');
-		game.setOtherplayer('X');
-		// TODO
+		btnO.setDisable(true);
+		btnX.setDisable(true);
+		game.enableGrid();
 	}
 
 	@FXML
 	private void btnX_clicked()
 	{
+		game.setPlayerNotSet(false);
+		game.getProducer().sendPlayerInfo('O');
 		game.setPlayer('X');
-		game.setOtherplayer('O');
-		// TODO
+		btnO.setDisable(true);
+		btnX.setDisable(true);
+		game.enableGrid();
 	}
 
 	public GameLogic getGameLogic()
@@ -164,9 +175,11 @@ public class GameStageController
 		private char otherPlayer;
 		private Producer producer;
 		private Consumer consumer;
+		private Boolean playerNotSet;
 
 		GameLogic()
 		{
+			playerNotSet = true;
 			moveCount = 0;
 			board = new char[size][size];
 			for (int i = 0; i < size; i++)
@@ -202,6 +215,11 @@ public class GameStageController
 			this.producer = producer;
 		}
 
+		public Producer getProducer()
+		{
+			return producer;
+		}
+
 		public void setConsumer(Consumer consumer)
 		{
 			this.consumer = consumer;
@@ -215,16 +233,28 @@ public class GameStageController
 		public void setPlayer(char player)
 		{
 			this.player = player;
-		}
 
-		public void setOtherplayer(char otherPlayer)
-		{
-			this.otherPlayer = otherPlayer;
+			if (player == 'O')
+				this.otherPlayer = 'X';
+			else
+				this.otherPlayer = 'O';
+
+			setPlayerNotSet(false);
 		}
 
 		public String getPlayer()
 		{
 			return Character.toString(player);
+		}
+
+		public void setPlayerNotSet(Boolean bool)
+		{
+			this.playerNotSet = bool;
+		}
+
+		public Boolean getPlayerNotSet()
+		{
+			return playerNotSet;
 		}
 
 		private void disableGrid()
