@@ -37,7 +37,6 @@ public class PlayerInfoConsumer
 			System.out.println("Konsument czeka na info");
 			TextMessage message;
 
-			Thread.sleep(10000);
 			while (game.getPlayerNotSet())
 			{
 				Message m = jmsConsumer.receive(1);
@@ -58,10 +57,7 @@ public class PlayerInfoConsumer
 		} catch (JMSException e)
 		{
 			e.printStackTrace();
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		} 
 
 		jmsContext.close();
 	}

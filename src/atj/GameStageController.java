@@ -59,7 +59,11 @@ public class GameStageController
 		imageBoard[2][0] = iv20;
 		imageBoard[2][1] = iv21;
 		imageBoard[2][2] = iv22;
-
+	}
+	
+	@FXML
+	public void afterInitialize()
+	{
 		game.disableGrid();
 		PIConsumer.recieveQueueMessages();
 	}
@@ -124,8 +128,6 @@ public class GameStageController
 		game.setPlayerNotSet(false);
 		game.getProducer().sendPlayerInfo('X');
 		game.setPlayer('O');
-		btnO.setDisable(true);
-		btnX.setDisable(true);
 		game.enableGrid();
 	}
 
@@ -135,8 +137,6 @@ public class GameStageController
 		game.setPlayerNotSet(false);
 		game.getProducer().sendPlayerInfo('O');
 		game.setPlayer('X');
-		btnO.setDisable(true);
-		btnX.setDisable(true);
 		game.enableGrid();
 	}
 
@@ -240,6 +240,8 @@ public class GameStageController
 				this.otherPlayer = 'O';
 
 			setPlayerNotSet(false);
+			btnO.setDisable(true);
+			btnX.setDisable(true);
 		}
 
 		public String getPlayer()
