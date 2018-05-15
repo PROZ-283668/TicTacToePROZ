@@ -11,11 +11,11 @@ import com.sun.messaging.ConnectionConfiguration;
 
 import javafx.util.Pair;
 
-public class PTPProducer
+public class Producer
 {
     private GameStageController.GameLogic game;
     
-    PTPProducer(GameStageController.GameLogic game)
+    Producer(GameStageController.GameLogic game)
     {
 	this.game = game;
     }
