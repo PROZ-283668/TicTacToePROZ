@@ -177,11 +177,9 @@ public class GameStageController
 	private char otherPlayer;
 	private Producer producer;
 	private Consumer consumer;
-	private Boolean playerNotSet;
 
 	GameLogic()
 	{
-	    playerNotSet = true;
 	    moveCount = 0;
 	    board = new char[size][size];
 	    for (int i = 0; i < size; i++)
@@ -253,16 +251,6 @@ public class GameStageController
 	public String getPlayer()
 	{
 	    return Character.toString(player);
-	}
-
-	public void setPlayerNotSet(Boolean bool)
-	{
-	    this.playerNotSet = bool;
-	}
-
-	public Boolean getPlayerNotSet()
-	{
-	    return playerNotSet;
 	}
 
 	private void disableGrid()

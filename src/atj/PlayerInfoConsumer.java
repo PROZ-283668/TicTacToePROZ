@@ -48,7 +48,6 @@ public class PlayerInfoConsumer
 	    {
 		e.printStackTrace();
 	    }
-	    game.setPlayerNotSet(false);
 	    System.out.println("!odbieram" + res);
 
 	    result = res;
