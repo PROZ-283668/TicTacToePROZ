@@ -13,60 +13,60 @@ import javafx.util.Pair;
 
 public class Producer
 {
-	private GameStageController.GameLogic game;
+    private GameStageController.GameLogic game;
 
-	Producer(GameStageController.GameLogic game)
+    Producer(GameStageController.GameLogic game)
+    {
+	this.game = game;
+    }
+
+    public void sendPlayerInfo(double rand)
+    {
+	ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
+
+	try
 	{
-		this.game = game;
-	}
+	    ((com.sun.messaging.ConnectionFactory) connectionFactory)
+		    .setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
+	    JMSContext jmsContext = connectionFactory.createContext();
+	    JMSProducer jmsProducer = jmsContext.createProducer();
+	    Queue queue = new com.sun.messaging.Queue("ATJQueue");
 
-	public void sendPlayerInfo(double rand)
+	    Message msg = jmsContext.createObjectMessage();
+	    msg.setStringProperty("Key", Double.toString(rand));
+
+	    System.out.println("Wysy³am info " + rand);
+	    jmsProducer.send(queue, msg);
+
+	    jmsContext.close();
+	} catch (JMSException e)
 	{
-		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
-
-		try
-		{
-			((com.sun.messaging.ConnectionFactory) connectionFactory)
-					.setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
-			JMSContext jmsContext = connectionFactory.createContext();
-			JMSProducer jmsProducer = jmsContext.createProducer();
-			Queue queue = new com.sun.messaging.Queue("ATJQueue");
-
-			Message msg = jmsContext.createObjectMessage();
-			msg.setStringProperty("Key", Double.toString(rand));
-			
-			System.out.println("Wysy³am info " + rand);
-			jmsProducer.send(queue, msg);
-
-			jmsContext.close();
-		} catch (JMSException e)
-		{
-			e.printStackTrace();
-		}
+	    e.printStackTrace();
 	}
+    }
 
-	public void sendQueueMessage(Pair<Integer, Integer> pair)
+    public void sendQueueMessage(Pair<Integer, Integer> pair)
+    {
+	ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
+
+	try
 	{
-		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
+	    ((com.sun.messaging.ConnectionFactory) connectionFactory)
+		    .setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
+	    JMSContext jmsContext = connectionFactory.createContext();
+	    JMSProducer jmsProducer = jmsContext.createProducer();
+	    Queue queue = new com.sun.messaging.Queue("ATJQueue");
 
-		try
-		{
-			((com.sun.messaging.ConnectionFactory) connectionFactory)
-					.setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
-			JMSContext jmsContext = connectionFactory.createContext();
-			JMSProducer jmsProducer = jmsContext.createProducer();
-			Queue queue = new com.sun.messaging.Queue("ATJQueue");
+	    Message msg = jmsContext.createTextMessage();
+	    msg.setStringProperty("PlayerID", game.getPlayer());
+	    msg.setStringProperty("Move", pair.getKey().toString() + ":" + pair.getValue().toString());
+	    System.out.println("Wysylam ID: " + game.getPlayer());
+	    jmsProducer.send(queue, msg);
 
-			Message msg = jmsContext.createTextMessage();
-			msg.setStringProperty("PlayerID", game.getPlayer());
-			msg.setStringProperty("Move", pair.getKey().toString() + ":" + pair.getValue().toString());
-			System.out.println("Wysylam ID: " + game.getPlayer());
-			jmsProducer.send(queue, msg);
-
-			jmsContext.close();
-		} catch (JMSException e)
-		{
-			e.printStackTrace();
-		}
+	    jmsContext.close();
+	} catch (JMSException e)
+	{
+	    e.printStackTrace();
 	}
+    }
 }

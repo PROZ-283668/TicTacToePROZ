@@ -197,7 +197,7 @@ public class GameStageController
 	    moveCount++;
 	    if (moveCount > 4) // Win possible only after 4th move
 		gameOver = checkVictoryCondition(otherPlayer, location);
-	    if(!gameOver)
+	    if (!gameOver)
 	    {
 		enableGrid();
 		txt.setText("Twój ruch");
@@ -214,7 +214,7 @@ public class GameStageController
 	    if (moveCount > 4) // Win possible only after 4th move
 		gameOver = checkVictoryCondition(player, location);
 	    disableGrid();
-	    if(!gameOver)
+	    if (!gameOver)
 		txt.setText("Przeciwnik wykonuje ruch...");
 	}
 
@@ -356,7 +356,7 @@ public class GameStageController
 		else
 		    txt.setText("Wygrywa " + winner + "!");
 	    }
-	    
+
 	    return gameOver;
 	}
     }
