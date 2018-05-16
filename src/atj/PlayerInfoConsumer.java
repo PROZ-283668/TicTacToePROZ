@@ -5,60 +5,63 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageListener;
 import javax.jms.Queue;
-import javax.jms.TextMessage;
 
 import com.sun.messaging.ConnectionConfiguration;
 
-import javafx.util.Pair;
-
 public class PlayerInfoConsumer
 {
-	GameStageController.GameLogic game;
+    GameStageController.GameLogic game;
 
-	PlayerInfoConsumer(GameStageController.GameLogic game)
+    PlayerInfoConsumer(GameStageController.GameLogic game)
+    {
+	this.game = game;
+    }
+
+    public double recieveQueueMessages(double key)
+    {
+	ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
+	JMSContext jmsContext = connectionFactory.createContext();
+	double result = -1;
+
+	try
 	{
-		this.game = game;
+	    ((com.sun.messaging.ConnectionFactory) connectionFactory)
+		    .setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
+	    Queue queue = new com.sun.messaging.Queue("ATJQueue");
+	    String selector = "Key <> '" + key + "' AND Key IS NOT NULL";
+	    JMSConsumer jmsConsumer = jmsContext.createConsumer(queue, selector);
+
+	    System.out.println("Konsument czeka na info");
+
+	    System.out.println("odb");
+	    Message msg;
+
+	    msg = jmsConsumer.receive();
+	    System.out.println("odb2");
+	    double res = -1.0;
+	    try
+	    {
+		if (msg != null)
+		    res = Double.parseDouble(msg.getStringProperty("Key"));
+	    } catch (JMSException e)
+	    {
+		e.printStackTrace();
+	    }
+	    game.setPlayerNotSet(false);
+	    System.out.println("!odbieram" + res);
+
+	    result = res;
+
+	    jmsConsumer.close();
+	} catch (
+
+	JMSException e)
+	{
+	    e.printStackTrace();
 	}
 
-	public void recieveQueueMessages()
-	{
-		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
-		JMSContext jmsContext = connectionFactory.createContext();
-
-		try
-		{
-			((com.sun.messaging.ConnectionFactory) connectionFactory)
-					.setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
-			Queue queue = new com.sun.messaging.Queue("ATJQueue");
-			JMSConsumer jmsConsumer = jmsContext.createConsumer(queue);
-
-			System.out.println("Konsument czeka na info");
-			TextMessage message;
-
-			while (game.getPlayerNotSet())
-			{
-				Message m = jmsConsumer.receive(1);
-				if (m != null)
-				{
-					if (m instanceof TextMessage)
-					{
-						message = (TextMessage) m;
-						game.setPlayer(message.getText().charAt(0));
-					} else
-					{
-						break;
-					}
-				}
-			}
-
-			jmsConsumer.close();
-		} catch (JMSException e)
-		{
-			e.printStackTrace();
-		} 
-
-		jmsContext.close();
-	}
+	jmsContext.close();
+	return result;
+    }
 }

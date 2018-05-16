@@ -39,14 +39,9 @@
       </Pane>
       <Pane layoutY="500.0" prefHeight="100.0" prefWidth="600.0">
          <children>
-            <Button fx:id="btnX" layoutX="13.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#btnX_clicked" text="X">
+            <Button fx:id="btnStart" layoutX="14.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#btnStart_clicked" text="Zacznij grę">
                <tooltip>
                   <Tooltip text="Wybierz krzyżyk" />
-               </tooltip>
-            </Button>
-            <Button fx:id="btnO" layoutX="58.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#btnO_clicked" text="O">
-               <tooltip>
-                  <Tooltip text="Wybierz kółko" />
                </tooltip>
             </Button>
             <Text fx:id="txt" layoutX="289.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" />

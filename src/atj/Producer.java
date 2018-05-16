@@ -20,7 +20,7 @@ public class Producer
 		this.game = game;
 	}
 
-	public void sendPlayerInfo(char player)
+	public void sendPlayerInfo(double rand)
 	{
 		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
 
@@ -32,7 +32,10 @@ public class Producer
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			Queue queue = new com.sun.messaging.Queue("ATJQueue");
 
-			Message msg = jmsContext.createTextMessage(Character.toString(player));
+			Message msg = jmsContext.createObjectMessage();
+			msg.setStringProperty("Key", Double.toString(rand));
+			
+			System.out.println("Wysy³am info " + rand);
 			jmsProducer.send(queue, msg);
 
 			jmsContext.close();
@@ -54,8 +57,10 @@ public class Producer
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			Queue queue = new com.sun.messaging.Queue("ATJQueue");
 
-			Message msg = jmsContext.createTextMessage(pair.getKey().toString() + ":" + pair.getValue().toString());
+			Message msg = jmsContext.createTextMessage();
 			msg.setStringProperty("PlayerID", game.getPlayer());
+			msg.setStringProperty("Move", pair.getKey().toString() + ":" + pair.getValue().toString());
+			System.out.println("Wysylam ID: " + game.getPlayer());
 			jmsProducer.send(queue, msg);
 
 			jmsContext.close();
