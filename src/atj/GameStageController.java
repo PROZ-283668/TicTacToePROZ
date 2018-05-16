@@ -244,8 +244,6 @@ public class GameStageController
 		this.otherPlayer = 'X';
 	    else
 		this.otherPlayer = 'O';
-
-	    setPlayerNotSet(false);
 	}
 
 	public String getPlayer()
