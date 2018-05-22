@@ -16,56 +16,56 @@ import javafx.util.Pair;
 
 public class Consumer implements MessageListener
 {
-    GameStageController.GameLogic game;
-    JMSConsumer jmsConsumer;
-    JMSContext jmsContext;
+	GameStageController.GameLogic game;
+	JMSConsumer jmsConsumer;
+	JMSContext jmsContext;
 
-    Consumer(GameStageController.GameLogic game)
-    {
-	this.game = game;
-
-	ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
-	jmsContext = connectionFactory.createContext();
-
-	try
+	Consumer(GameStageController.GameLogic game)
 	{
-	    ((com.sun.messaging.ConnectionFactory) connectionFactory)
-		    .setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
-	    Queue queue = new com.sun.messaging.Queue("ATJQueue");
-	    String selector = "PlayerID <> '" + game.getPlayer() + "' AND PlayerID IS NOT NULL";
-	    jmsConsumer = jmsContext.createConsumer(queue, selector);
-	    jmsConsumer.setMessageListener(this);
+		this.game = game;
 
-	} catch (JMSException e)
-	{
-	    e.printStackTrace();
+		ConnectionFactory connectionFactory = new com.sun.messaging.ConnectionFactory();
+		jmsContext = connectionFactory.createContext();
+
+		try
+		{
+			((com.sun.messaging.ConnectionFactory) connectionFactory)
+					.setProperty(ConnectionConfiguration.imqAddressList, "localhost:7676/jms");
+			Queue queue = new com.sun.messaging.Queue("ATJQueue");
+			String selector = "PlayerID <> '" + game.getPlayer() + "' AND PlayerID IS NOT NULL";
+			jmsConsumer = jmsContext.createConsumer(queue, selector);
+			jmsConsumer.setMessageListener(this);
+
+		} catch (JMSException e)
+		{
+			e.printStackTrace();
+		}
 	}
-    }
 
-    public void close()
-    {
-	jmsConsumer.close();
-	jmsContext.close();
-    }
+	public void close()
+	{
+		jmsConsumer.close();
+		jmsContext.close();
+	}
 
-    @Override
-    public void onMessage(Message message)
-    {
-	Platform.runLater(() -> {
-	    try
-	    {
-		TextMessage msg = (TextMessage) message;
-		String text = msg.getStringProperty("Move");
-		System.out.println("Asynch odbior " + text);
-		String[] coordinates = text.split(":");
-		Pair<Integer, Integer> location = new Pair<Integer, Integer>(Integer.parseInt(coordinates[0]),
-			Integer.parseInt(coordinates[1]));
+	@Override
+	public void onMessage(Message message)
+	{
+		Platform.runLater(() -> {
+			try
+			{
+				TextMessage msg = (TextMessage) message;
+				String text = msg.getStringProperty("Move");
+				System.out.println("Asynch odbior " + text);
+				String[] coordinates = text.split(":");
+				Pair<Integer, Integer> location = new Pair<Integer, Integer>(Integer.parseInt(coordinates[0]),
+						Integer.parseInt(coordinates[1]));
 
-		game.registerMove(location);
-	    } catch (JMSException e)
-	    {
-		e.printStackTrace();
-	    }
-	});
-    }
+				game.registerMove(location);
+			} catch (JMSException e)
+			{
+				e.printStackTrace();
+			}
+		});
+	}
 }

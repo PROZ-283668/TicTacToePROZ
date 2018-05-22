@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="atj.GameStageController">
+<AnchorPane maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="atj.GameStageController">
    <children>
       <Pane prefHeight="500.0" prefWidth="600.0">
          <children>
@@ -39,10 +39,7 @@
       </Pane>
       <Pane layoutY="500.0" prefHeight="100.0" prefWidth="600.0">
          <children>
-            <Button fx:id="btnStart" layoutX="14.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#btnStart_clicked" text="Zacznij grę">
-               <tooltip>
-                  <Tooltip text="Wybierz krzyżyk" />
-               </tooltip>
+            <Button fx:id="btnStart" layoutX="14.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#btnStart_clicked" text="Zacznij nową grę">
             </Button>
             <Text fx:id="txt" layoutX="289.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" />
          </children>
